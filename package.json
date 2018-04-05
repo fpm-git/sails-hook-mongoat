@@ -31,8 +31,7 @@
   ],
   "author": "Team FA",
   "license": "MIT",
-  "dependencies": {
-    "async": "^1.0.0",
-    "lodash": "^3.9.3"
+  "devDependencies": {
+    "eslint": "4.19.0"
   }
 }
