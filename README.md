@@ -7,7 +7,9 @@ Provides advanced mongo indexing options for sails.js models that use the sails-
 
 ## Usage
 
-    npm i sails-hook-mongoat
+```bash
+npm install git+ssh://git@github.com/fpm-git/sails-hook-mongoat.git
+```
 
 Then simply add an 'indexes' array property to your sails model(s) that you want to add custom indexers on.  This contains all your indexes.
 
@@ -18,63 +20,75 @@ Index properties:
 
 ## Examples ##
 
-**Creating a 'expires after' index**
-```javascript
+### Creating a TTL index:
+```js
 // MY MODEL WITH A DATE FIELD
 module.exports = {
   attributes: {
     myDate: {
       type: 'date',
-      required: true
-    }
+      required: true,
+    },
   },
-  indexes: [
-    {
-      attributes: {
-        myDate: 1
-      },
-      options: {
-        expireAfterSeconds: 60  // expire 60s after myDate
-      }
-    }
-  ]
+  indexes: [{
+    attributes: {
+      myDate: 1,
+    },
+    options: {
+      expireAfterSeconds: 60,  // expire 60s after myDate
+    },
+  }],
 };
 ```
 
 
-**Creating a composite unique index**
-```javascript
+### Creating a composite unique index:
+```js
 // MY EVENTS MODEL
 module.exports = {
   attributes: {
     event_id: {
       type: 'integer',
-      required: true
+      required: true,
     },
     match_id: {
       type: 'integer',
-      required: true
-    }
+      required: true,
+    },
   },
-  indexes: [
-    //event & match composite index
-    {
-      attributes: {
-        event_id: -1,    // desc
-        match: 1         // asc
-      },
-      options: {
-        unique: true
-      }
-    }
-  ]
+  indexes: [{
+    // Index on both `event_id` and `match`.
+    attributes: {
+      event_id: -1,    // desc
+      match: 1,        // asc
+    },
+    options: {
+      unique: true,
+    },
+  }],
 };
 ```
 
-## Maintained By
-- [Mike Diarmid](https://github.com/salakar)
+### Forcing updates to run in `safe` migration mode:
 
-<img src='http://i.imgur.com/NsAdNdJ.png'>
+Sometimes it might be desireable to run migrations in safe mode, something which is automatically prevented by default. In such scenarios, switching to `drop` or `alter` may not entirely be an option.
+
+For these cases, the `mongoat.forceUpdate` config value may be set to a truthy value, forcing the hook to attempt updates regardless of model migration preference.
+
+This flag may be set conveniently through the commandline when launching your Sails app:
+
+```bash
+# With Sails running in console mode:
+$ sails console --mongoat.forceUpdate
+
+# Or run Sails without the REPL:
+$ sails lift --mongoat.forceUpdate
+
+# Or run Sails directly:
+$ node ./node_modules/.bin/sails lift --mongoat.forceUpdate
+```
+
+
 
 [npm-image]: https://img.shields.io/npm/v/sails-hook-mongoat.svg?style=flat-square
 [npm-url]: https://npmjs.org/package/sails-hook-mongoat
