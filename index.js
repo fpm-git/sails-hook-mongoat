@@ -12,7 +12,7 @@ const SailsHookMongoat = (sails) => ({
 
   initialize(done) {
     sails.after('hook:orm:loaded', () => {
-      this.createAllIndexes().then(res => done()).catch(done);
+      this.createAllIndexes().then(() => done()).catch(done);
     });
   },
 
@@ -30,7 +30,7 @@ const SailsHookMongoat = (sails) => ({
 
     sails.log.debug('[Mongoat]', 'Handling model index updates...');
     // load indices for each model. we wait for each "synchronously," but Mongo doesn't parallelise it anyway (by default)... (and we wouldn't want to break guarantees by doing that either)
-    for (modelName in sails.models) {
+    for (const modelName in sails.models) {
       await this.createModelIndexes(sails.models[modelName]);
     }
     sails.log.debug('[Mongoat]', 'Done updating indexes!');
