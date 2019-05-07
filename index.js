@@ -21,6 +21,7 @@ const SailsHookMongoat = (sails) => ({
     const createPrefs = this.shouldCreateIndexes();
     if (!createPrefs.shouldCreate) {
       sails.log.warn('[Mongoat]', 'Not creating indexes:', createPrefs.forbiddenReason);
+      sails.log.warn('[Mongoat]', 'If desired, index updates can be instead forced with the "--mongoat.forceUpdate" commandline option. See README for more info.');
       return;
     }
 
