@@ -21,18 +21,19 @@ const SailsHookMongoat = (sails) => ({
    * createModelIndexes method for each.
    */
   async createAllIndexes() {
-    sails.log.debug('Mongoat: creating model indexes...');
-
-    // leave without applying indices, if we're not using an 'alter' or 'drop' strategy
-    if (sails.config.models && (['alter', 'drop'].indexOf(sails.config.models.migrate) < 0)) {
-      sails.log.warn(`Mongoat: not creating indexes due to model migration strategy "${sails.config.models.migrate}". Use "alter" or "drop" to enable index creation, or build them manually.`);
+    // Determine whether or not we should create indexes (and get a fitting reason if not).
+    const createPrefs = this.shouldCreateIndexes();
+    if (!createPrefs.shouldCreate) {
+      sails.log.warn('[Mongoat]', 'Not creating indexes:', createPrefs.forbiddenReason);
       return;
     }
 
+    sails.log.debug('[Mongoat]', 'Handling model index updates...');
     // load indices for each model. we wait for each "synchronously," but Mongo doesn't parallelise it anyway (by default)... (and we wouldn't want to break guarantees by doing that either)
     for (modelName in sails.models) {
       await this.createModelIndexes(sails.models[modelName]);
     }
+    sails.log.debug('[Mongoat]', 'Done updating indexes!');
   },
 
   /**
@@ -63,6 +64,44 @@ const SailsHookMongoat = (sails) => ({
         sails.log.error(`Mongoat: failed to create index for model "${model.tableName}":`, e);
       }
     });
+  },
+
+  /**
+   * @typedef {object} ShouldCreateIndexInfo
+   * @property {boolean} shouldCreate - Whether or not index updates should be performed.
+   * @property {string} [forbiddenReason] - Reason for which indexes should not be updated.
+   * Must be set when `canCreate` is `false`.
+   */
+  /**
+   * Determines whether or not we are allowed to create or update new indexes, returning
+   * an object with fitting error details in the event where something would prevent our
+   * attempted changes.
+   *
+   * By default, index updates are forbidden when not running in `alter` or `drop` mode,
+   * though this may be overridden by specifying a truthy `mongoat.forceUpdate` value in
+   * the config.
+   *
+   * One convenient way to ensure indexes are updated is to simply pass the force-update
+   * flag when lifting:
+   * `sails console --mongoat.forceUpdate`
+   *
+   * @returns {ShouldCreateIndexInfo}
+   */
+  shouldCreateIndexes() {
+    // If we've mongoat configured to force updates, return immediately indicating we're
+    // allowed.
+    if (sails.config.mongoat && sails.config.mongoat.forceUpdate) {
+      return { shouldCreate: true };
+    }
+    // If we're not in `alter` or `drop` mode, avoid updates.
+    if (sails.config.models && !['alter', 'drop'].includes(sails.config.models.migrate)) {
+      return {
+        shouldCreate: false,
+        forbiddenReason: `Model migration strategy "${sails.config.models.migrate}" was set. Use "alter" or "drop" to enable index creation, or build them manually.`,
+      };
+    }
+    // Otherwise we're good to go ahead and create/update indexes!
+    return { shouldCreate: true };
   },
 
 });
