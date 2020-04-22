@@ -1,14 +1,16 @@
 # sails-hook-mongoat
-[![NPM version][npm-image]][npm-url]
-[![Build status][travis-image]][travis-url]
-[![Dependency Status][daviddm-image]][daviddm-url]
+[![License][license-image]][license-url]
+[![Current release][release-image]][release-url]
+[![Build status][ci-image]][ci-url]
+[![Dependency status][daviddm-image]][daviddm-url]
+[![Development dependency status][daviddm-dev-image]][daviddm-dev-url]
 
-Provides advanced mongo indexing options for sails.js models that use the sails-mongo adapter.
+Provides advanced MongoDB indexing options for [Sails.js](https://github.com/balderdashy/sails) models that use the [sails-mongo](https://github.com/balderdashy/sails-mongo) adapter.
 
 ## Usage
 
 ```bash
-npm install git+ssh://git@github.com/fpm-git/sails-hook-mongoat.git
+npm i git+ssh://git@github.com/fpm-git/sails-hook-mongoat.git
 ```
 
 Then simply add an 'indexes' array property to your sails model(s) that you want to add custom indexers on.  This contains all your indexes.
@@ -90,9 +92,13 @@ $ node ./node_modules/.bin/sails lift --mongoat.forceUpdate
 
 
 
-[npm-image]: https://img.shields.io/npm/v/sails-hook-mongoat.svg?style=flat-square
-[npm-url]: https://npmjs.org/package/sails-hook-mongoat
-[travis-image]: https://img.shields.io/travis/teamfa/sails-hook-mongoat.svg?style=flat-square
-[travis-url]: https://travis-ci.org/teamfa/sails-hook-mongoat
-[daviddm-image]: http://img.shields.io/david/teamfa/sails-hook-mongoat.svg?style=flat-square
-[daviddm-url]: https://david-dm.org/teamfa/sails-hook-mongoat
+[release-image]: https://badgen.net/github/release/fpm-git/sails-hook-mongoat
+[release-url]: https://github.com/fpm-git/sails-hook-mongoat/releases/latest
+[license-image]: https://badgen.net/github/license/fpm-git/sails-hook-mongoat
+[license-url]: https://github.com/fpm-git/sails-hook-mongoat/blob/master/LICENSE
+[ci-image]: https://badgen.net/github/status/fpm-git/sails-hook-mongoat/master/ci
+[ci-url]: https://circleci.com/gh/fpm-git/sails-hook-mongoat
+[daviddm-image]: https://badgen.net/david/dep/fpm-git/sails-hook-mongoat
+[daviddm-url]: https://david-dm.org/fpm-git/sails-hook-mongoat
+[daviddm-dev-image]: https://badgen.net/david/dev/fpm-git/sails-hook-mongoat
+[daviddm-dev-url]: https://david-dm.org/fpm-git/sails-hook-mongoat?type=dev
