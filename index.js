@@ -59,7 +59,7 @@ const SailsHookMongoat = (sails) => ({
     const collection = (typeof model.getDatastore === 'function') ? model.getDatastore().manager.collection(model.tableName) : await asyncify(model.native);
     model.indexes.forEach(async index => {
       try {
-        await collection.ensureIndex(index.attributes, index.options || {});
+        await collection.createIndex(index.attributes, index.options || {});
         sails.log.verbose(`Mongoat: created index for model "${model.tableName}" !`);
       } catch (e) {
         sails.log.error(`Mongoat: failed to create index for model "${model.tableName}":`, e);
